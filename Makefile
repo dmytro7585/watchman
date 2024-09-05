@@ -1,28 +1,19 @@
-# Ім'я вихідного файлу (назва програми)
-TARGET = watchman
-
-# Компілятор та флаги
+# Компілятор та опції
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Os -std=c11 -flto -g -Wall -Wextra -Werror
+LDFLAGS = -flto
 
-# Джерельні файли та об'єктні файли
-SRC = watchman.c
-OBJ = $(SRC:.c=.o)
+# Ціль за замовчуванням
+all: watchman
 
-# Правило за замовчуванням (збірка програми)
-all: $(TARGET)
+# Компіляція програми
+watchman: watchman.o
+	$(CC) $(LDFLAGS) -o watchman watchman.o
 
-# Правило для збірки виконуваного файлу
-$(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
+# Компіляція об'єктного файлу
+watchman.o: watchman.c
+	$(CC) $(CFLAGS) -c watchman.c -o watchman.o
 
-# Правило для збірки об'єктних файлів
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Правило для очищення скомпільованих файлів
+# Очищення
 clean:
-	rm -f $(OBJ) $(TARGET)
-
-# Додаткові цілі не є файлами
-.PHONY: all clean
+	rm -f watchman watchman.o
