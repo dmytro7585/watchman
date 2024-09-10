@@ -1,16 +1,16 @@
 # Watchman
-_The program outputs detailed information about the current time, date, year, time zone to the terminal._
+Simple (one line) TTY time & date monitor
 
-### Required components to run:
+### Build & Run dependencies:
 ```
 GCC
 Make
 ``` 
-### Instructions for assembly and launch
+### Build & Run instructions.
 
 1. Cloning the repository:
 ```
-https://github.com/dmytro7585/watchman.git
+git clone https://github.com/dmytro7585/watchman.git
 cd watchman
 ```
 2. Program assembly
