@@ -13,7 +13,7 @@ Make
 git clone https://github.com/dmytro7585/watchman.git
 cd watchman
 ```
-2. Program assembly
+2. Building
 ```
 make
 ```
