@@ -45,4 +45,5 @@ make clean
 -u - displays Greenwich Mean Time
 -w - writes the name of the day of the week
 -a - AM/PM mode
+-b - Enable dots blinking
 ```

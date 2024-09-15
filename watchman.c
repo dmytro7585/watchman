@@ -22,8 +22,10 @@ static struct watchman_s
         bool show_weekday;
         bool am_pm_format;
         bool show_utc;
+        bool blink;
     } options;
     volatile bool running;
+    bool dots_on_off; 
 } watchman_s;
 
 static void show_time(const struct tm *tim);
@@ -37,14 +39,14 @@ int main(int argc, char *argv[])
     watchman_s.running = true;
     int opt;
 
-    while ((opt = getopt(argc, argv, "hsdmtuwa")) != -1) 
+    while ((opt = getopt(argc, argv, "hsdmtuwab")) != -1) 
     {
         switch (opt) 
         {
             case 'h':
             default:
                 print_help();
-                exit(EXIT_FAILURE);
+                exit(EXIT_SUCCESS);
             case 's':
                 watchman_s.options.show_seconds = true;
                 break;
@@ -65,6 +67,9 @@ int main(int argc, char *argv[])
                 break;
             case 'a':
                 watchman_s.options.am_pm_format = true;
+                break;
+            case 'b':
+                watchman_s.options.blink = true;
                 break;
         }
     }
@@ -95,7 +100,7 @@ int main(int argc, char *argv[])
             break;
         }
         
-        sleep(1);
+        usleep(500000);
     }
 
     set_nonblocking_mode(false);
@@ -107,6 +112,7 @@ static void show_time(const struct tm *tim)
 {
     printf("\r");
 
+    watchman_s.dots_on_off = !watchman_s.dots_on_off;
     if (watchman_s.options.am_pm_format) 
     {
         int hour = tim->tm_hour % 12;
@@ -114,11 +120,11 @@ static void show_time(const struct tm *tim)
 
         if (watchman_s.options.show_seconds) 
         {
-            printf("[%02d:%02d:%02d", hour, tim->tm_min, tim->tm_sec);
+            printf(watchman_s.options.blink && watchman_s.dots_on_off ? "[%02d %02d %02d" : "[%02d:%02d:%02d", hour, tim->tm_min, tim->tm_sec);
         } 
         else 
         {
-            printf("[%02d:%02d", hour, tim->tm_min);
+           printf(watchman_s.options.blink && watchman_s.dots_on_off ? "[%02d %02d" : "[%02d:%02d", hour, tim->tm_min);
         }
         printf(tim->tm_hour >= 12 ? " PM]" : " AM]");
     } 
@@ -126,11 +132,11 @@ static void show_time(const struct tm *tim)
     {
         if (watchman_s.options.show_seconds) 
         {
-            printf("[%02d:%02d:%02d]", tim->tm_hour, tim->tm_min, tim->tm_sec);
+            printf(watchman_s.options.blink && watchman_s.dots_on_off ? "[%02d %02d %02d]" : "[%02d:%02d:%02d]", tim->tm_hour, tim->tm_min, tim->tm_sec);
         } 
         else 
         {
-            printf("[%02d:%02d]", tim->tm_hour, tim->tm_min);
+           printf(watchman_s.options.blink && watchman_s.dots_on_off ? "[%02d %02d]" : "[%02d:%02d]", tim->tm_hour, tim->tm_min);
         }
     }
 
@@ -193,7 +199,7 @@ static void print_help(void)
 {
     printf
     (
-        "Usage: ./watchman [-hsdtmuwa]\n"
+        "Usage: ./watchman [-hsdtmuwab]\n"
         "Options:\n"
         "  -h          Show this help message\n"
         "  -s          Show seconds\n"
@@ -203,5 +209,6 @@ static void print_help(void)
         "  -u          Show time in UTC\n"
         "  -w          Show weekday name\n"
         "  -a          Use AM/PM format\n"
+        "  -b          Enable dots blinking\n"
     );
 }

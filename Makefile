@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Os -std=c11 -flto -g -Wall -Wextra -Werror
+CFLAGS = -Os -flto -g -Wall -Wextra -Werror
 LDFLAGS = -flto
 
 all: watchman
